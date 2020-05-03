@@ -64,7 +64,7 @@ public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
         LoggingEvent loggingEvent = (LoggingEvent) eventObject;
         Log log = new Log();
 
-        log.setLevel(loggingEvent.getLevel().levelStr).setCreateTime(LocalDateTime.now())
+        log.setLevel(loggingEvent.getLevel().levelStr).setCreateTime(System.currentTimeMillis())
                 .setProject(project).setMessage(loggingEvent.getMessage())
                 .setModule(module).setUuid(uuid);
 

@@ -1,9 +1,6 @@
 package com.ultlog.collector.model;
 
-import ch.qos.logback.classic.Level;
-
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @program: collector
@@ -38,7 +35,7 @@ public class Log implements Serializable {
     /**
      * create time
      */
-    private LocalDateTime createTime;
+    private Long createTime;
 
     /**
      * log message
@@ -91,11 +88,11 @@ public class Log implements Serializable {
         return this;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public Log setCreateTime(LocalDateTime createTime) {
+    public Log setCreateTime(Long createTime) {
         this.createTime = createTime;
         return this;
     }
