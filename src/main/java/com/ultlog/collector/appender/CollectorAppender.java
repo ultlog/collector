@@ -68,6 +68,16 @@ public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .setProject(project).setMessage(loggingEvent.getMessage())
                 .setModule(module).setUuid(uuid);
 
+        final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
+        if (callerDataArray != null && callerDataArray.length > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (StackTraceElement stackTraceElement : callerDataArray) {
+                stringBuilder.append(stackTraceElement.toString()).append(";");
+            }
+            final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
+            log.setStack(replace.toString());
+        }
+
         // get json string
         final String json;
         try {
