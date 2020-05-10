@@ -4,15 +4,12 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.ultlog.collector.model.Log;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @program: collector
@@ -20,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * @author: will
  * @create: 2020-05-01
  **/
-public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
+public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     /**
      * ula url
@@ -44,19 +41,11 @@ public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     OkHttpClient client = new OkHttpClient();
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(EsAppender.class);
 
-    public static final MediaType MEDIA_TYPE_MARKDOWN
-            = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType MEDIA_TYPE_JSON_UTF8 = MediaType.parse("application/json; charset=utf-8");
 
     private final static ObjectMapper mapper = new ObjectMapper();
-
-    static {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-        mapper.registerModule(javaTimeModule);
-    }
 
     @Override
     protected void append(E eventObject) {
@@ -69,6 +58,8 @@ public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .setModule(module).setUuid(uuid);
 
         final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
+
+        // add stack
         if (callerDataArray != null && callerDataArray.length > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             for (StackTraceElement stackTraceElement : callerDataArray) {
@@ -83,23 +74,21 @@ public class CollectorAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             json = mapper.writeValueAsString(log);
         } catch (JsonProcessingException e) {
-            // todo add fallback
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return;
         }
 
         // create request with json
-        RequestBody body = RequestBody.create(MEDIA_TYPE_MARKDOWN, json);
+        RequestBody body = RequestBody.create(MEDIA_TYPE_JSON_UTF8, json);
         Request request = new Request.Builder().url(url).post(body).build();
 
         // post data to ula
         try (Response execute = client.newCall(request).execute()) {
             if (!execute.isSuccessful()) {
-                // todo add fallback
+                LOGGER.error("Failed to send, log is " + json);
             }
         } catch (IOException e) {
-            // todo add fallback
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
