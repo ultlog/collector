@@ -19,7 +19,11 @@ public class DefaultThreadPoolProvider implements ThreadPoolProvider {
     public ThreadPoolExecutor getThreadPoolExecutor() {
         return new ThreadPoolExecutor(5, 6, 2, TimeUnit.DAYS, new LinkedBlockingDeque<>(200), r -> {
             final Thread thread = new Thread(r);
-            thread.setName("ultlog-collector-default-thread" + threadNumber.getAndIncrement());
+            final int andIncrement = threadNumber.getAndIncrement();
+            if(andIncrement == Integer.MAX_VALUE){
+                threadNumber = new AtomicInteger(0);
+            }
+            thread.setName("ultlog-collector-default-thread" + andIncrement);
             return thread;
         }, new ThreadPoolExecutor.AbortPolicy());
     }
