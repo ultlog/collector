@@ -1,6 +1,7 @@
 package com.ultlog.collector.appender;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +59,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .setModule(module).setUuid(uuid);
 
         final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
+        final StackTraceElementProxy[] stackTraceElementProxyArray = loggingEvent.getThrowableProxy().getStackTraceElementProxyArray();
 
         // add stack
         if (callerDataArray != null && callerDataArray.length > 0) {
@@ -67,6 +69,14 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
             }
             final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
             log.setStack(replace.toString());
+        }else if(stackTraceElementProxyArray!=null && stackTraceElementProxyArray.length > 0){
+            StringBuilder stringBuilder = new StringBuilder();
+            for (StackTraceElementProxy stackTraceElementProxy : stackTraceElementProxyArray) {
+                stringBuilder.append(stackTraceElementProxy.toString()).append(";");
+            }
+            final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
+            log.setStack(replace.toString());
+
         }
 
         // get json string
