@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.ultlog.common.constant.API.POST_LOG;
+
 /**
  * @program: collector
  * @link: github.com/ultlog/collector
@@ -69,7 +71,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
             }
             final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
             log.setStack(replace.toString());
-        }else if(stackTraceElementProxyArray!=null && stackTraceElementProxyArray.length > 0){
+        } else if (stackTraceElementProxyArray != null && stackTraceElementProxyArray.length > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             for (StackTraceElementProxy stackTraceElementProxy : stackTraceElementProxyArray) {
                 stringBuilder.append(stackTraceElementProxy.toString()).append(";");
@@ -103,7 +105,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = url + POST_LOG;
     }
 
     public void setProject(String project) {
