@@ -1,15 +1,19 @@
 package com.ultlog.collector.appender;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ultlog.collector.health.HealthSender;
 import com.ultlog.common.model.Log;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
+import static com.ultlog.common.constant.API.POST_LOG;
 
 /**
  * @program: collector
@@ -48,6 +52,12 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
     private final static ObjectMapper mapper = new ObjectMapper();
 
     @Override
+    public void start() {
+        started = true;
+        HealthSender.init(this.url, this.project, this.module, this.uuid);
+    }
+
+    @Override
     protected void append(E eventObject) {
 
         LoggingEvent loggingEvent = (LoggingEvent) eventObject;
@@ -58,6 +68,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .setModule(module).setUuid(uuid);
 
         final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
+        final StackTraceElementProxy[] stackTraceElementProxyArray = loggingEvent.getThrowableProxy().getStackTraceElementProxyArray();
 
         // add stack
         if (callerDataArray != null && callerDataArray.length > 0) {
@@ -67,6 +78,14 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
             }
             final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
             log.setStack(replace.toString());
+        } else if (stackTraceElementProxyArray != null && stackTraceElementProxyArray.length > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (StackTraceElementProxy stackTraceElementProxy : stackTraceElementProxyArray) {
+                stringBuilder.append(stackTraceElementProxy.toString()).append(";");
+            }
+            final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
+            log.setStack(replace.toString());
+
         }
 
         // get json string
@@ -80,7 +99,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
 
         // create request with json
         RequestBody body = RequestBody.create(MEDIA_TYPE_JSON_UTF8, json);
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().url(url + POST_LOG).post(body).build();
 
         // post data to ula
         try (Response execute = client.newCall(request).execute()) {
