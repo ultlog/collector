@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ultlog.collector.health.HealthSender;
 import com.ultlog.common.model.Log;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -51,6 +52,12 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
     private final static ObjectMapper mapper = new ObjectMapper();
 
     @Override
+    public void start() {
+        started = true;
+        HealthSender.init(this.url, this.project, this.module, this.uuid);
+    }
+
+    @Override
     protected void append(E eventObject) {
 
         LoggingEvent loggingEvent = (LoggingEvent) eventObject;
@@ -92,7 +99,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
 
         // create request with json
         RequestBody body = RequestBody.create(MEDIA_TYPE_JSON_UTF8, json);
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().url(url + POST_LOG).post(body).build();
 
         // post data to ula
         try (Response execute = client.newCall(request).execute()) {
@@ -105,7 +112,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     public void setUrl(String url) {
-        this.url = url + POST_LOG;
+        this.url = url;
     }
 
     public void setProject(String project) {
