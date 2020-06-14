@@ -1,5 +1,6 @@
 package com.ultlog.collector.appender;
 
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
@@ -68,7 +69,12 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .setModule(module).setUuid(uuid);
 
         final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
-        final StackTraceElementProxy[] stackTraceElementProxyArray = loggingEvent.getThrowableProxy().getStackTraceElementProxyArray();
+        final IThrowableProxy throwableProxy = loggingEvent.getThrowableProxy();
+        StackTraceElementProxy[] stackTraceElementProxyArray = null;
+        if (throwableProxy != null) {
+
+            stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
+        }
 
         // add stack
         if (callerDataArray != null && callerDataArray.length > 0) {
