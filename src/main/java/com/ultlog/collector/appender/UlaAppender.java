@@ -19,13 +19,9 @@ import static com.ultlog.common.constant.API.POST_LOG;
  * @program: collector
  * @link: github.com/ultlog/collector
  * @author: will
- * @create: 2020-05-01
- *
- * @see com.ultlog.collector.appender.UlaAppender
+ * @create: 2020-06-28
  **/
-@Deprecated
-public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
-
+public class UlaAppender<E> extends UnsynchronizedAppenderBase<E> {
     /**
      * ula url
      */
