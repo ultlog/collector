@@ -101,6 +101,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
             json = mapper.writeValueAsString(log);
         } catch (JsonProcessingException e) {
 //            LOGGER.error(e.getMessage(), e);
+            // todo
             return;
         }
 
@@ -112,9 +113,11 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         try (Response execute = client.newCall(request).execute()) {
             if (!execute.isSuccessful()) {
 //                LOGGER.error("Failed to send, log is " + json);
+                // todo
             }
         } catch (IOException e) {
 //            LOGGER.error(e.getMessage(), e);
+            // todo
         }
     }
 
