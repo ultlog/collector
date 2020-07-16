@@ -100,8 +100,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             json = mapper.writeValueAsString(log);
         } catch (JsonProcessingException e) {
-//            LOGGER.error(e.getMessage(), e);
-            // todo
+            addError("problem send log ",e);
             return;
         }
 
@@ -112,12 +111,10 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         // post data to ula
         try (Response execute = client.newCall(request).execute()) {
             if (!execute.isSuccessful()) {
-//                LOGGER.error("Failed to send, log is " + json);
-                // todo
+                addError("problem send log, log is"+json);
             }
         } catch (IOException e) {
-//            LOGGER.error(e.getMessage(), e);
-            // todo
+            addError("problem send log ",e);
         }
     }
 
