@@ -24,9 +24,9 @@
     <appender-ref ref="ultlog"/>
 </root>
 ````
-变量含义
+配置项说明
 
-|  |  |  
+|  配置项|   说明 |  
 | ------ | ------ | 
 | ula-ip | ula服务的ip |  
 | ula-port | ula服务的ip端口 |  
