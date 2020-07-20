@@ -1,4 +1,8 @@
 # collector
+## 前言 
+
+## 集成
+
 ### 引入
 
 ````xml
@@ -14,7 +18,7 @@
 
 <appender name="ultlog" class="com.ultlog.collector.appender.AsyncEsAppender">
     <param name="threadPoolProviderName" value="com.ultlog.collector.support.DefaultThreadPoolProvider"/>
-    <param name="url" value="{ula-ip}:{ula-port}/api/v1/log"/>
+    <param name="url" value="{ula}/api/v1/log"/>
     <param name="project" value="{project}"/>
     <param name="module" value="{module}"/>
     <param name="uuid" value="{uuid}"/>
@@ -28,8 +32,7 @@
 
 |  配置项|   说明 |  
 | ------ | ------ | 
-| ula-ip | ula服务的ip |  
-| ula-port | ula服务的ip端口 |  
+| ula | ula服务的地址 |  
 | project | 项目名称 | 
 | module | 模块名称（如果非微服务项目可以与project相等） | 
 | uuid | 服务唯一属性 |
