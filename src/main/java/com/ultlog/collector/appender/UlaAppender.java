@@ -19,13 +19,9 @@ import static com.ultlog.common.constant.API.POST_LOG;
  * @program: collector
  * @link: github.com/ultlog/collector
  * @author: will
- * @create: 2020-05-01
- *
- * @see com.ultlog.collector.appender.UlaAppender
+ * @create: 2020-06-28
  **/
-@Deprecated
-public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
-
+public class UlaAppender<E> extends UnsynchronizedAppenderBase<E> {
     /**
      * ula url
      */
@@ -100,7 +96,7 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             json = mapper.writeValueAsString(log);
         } catch (JsonProcessingException e) {
-            addError("problem send log ",e);
+            LOGGER.error(e.getMessage(), e);
             return;
         }
 
@@ -111,10 +107,10 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         // post data to ula
         try (Response execute = client.newCall(request).execute()) {
             if (!execute.isSuccessful()) {
-                addError("problem send log, log is"+json);
+                LOGGER.error("Failed to send, log is " + json);
             }
         } catch (IOException e) {
-            addError("problem send log ",e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
