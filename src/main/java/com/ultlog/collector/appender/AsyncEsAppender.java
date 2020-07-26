@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author: will
  * @create: 2020-05-10
  **/
+@Deprecated
 public class AsyncEsAppender<E> extends EsAppender<E> {
 
 
