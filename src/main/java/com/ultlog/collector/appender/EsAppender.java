@@ -72,21 +72,36 @@ public class EsAppender<E> extends UnsynchronizedAppenderBase<E> {
         final StackTraceElement[] callerDataArray = loggingEvent.getCallerData();
         final IThrowableProxy throwableProxy = loggingEvent.getThrowableProxy();
         StackTraceElementProxy[] stackTraceElementProxyArray = null;
-        if (throwableProxy != null) {
+        // exception message
+        String exceptionMessage = "";
 
+        // if throwableProxy not null, get stack trace
+        if (throwableProxy != null) {
+            exceptionMessage = throwableProxy.getClassName() + ": " + throwableProxy.getMessage();
             stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
         }
 
         // add stack
         if (callerDataArray != null && callerDataArray.length > 0) {
+
             StringBuilder stringBuilder = new StringBuilder();
+
+            if(!"".equals(exceptionMessage)){
+                stringBuilder.append(exceptionMessage);
+            }
+
             for (StackTraceElement stackTraceElement : callerDataArray) {
                 stringBuilder.append(stackTraceElement.toString()).append(";");
             }
             final StringBuilder replace = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length() - 1, "");
             log.setStack(replace.toString());
         } else if (stackTraceElementProxyArray != null && stackTraceElementProxyArray.length > 0) {
+
             StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append(exceptionMessage).append(";");
+
+
             for (StackTraceElementProxy stackTraceElementProxy : stackTraceElementProxyArray) {
                 stringBuilder.append(stackTraceElementProxy.toString()).append(";");
             }
