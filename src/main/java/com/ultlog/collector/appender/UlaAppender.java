@@ -44,7 +44,7 @@ public class UlaAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     OkHttpClient client = new OkHttpClient();
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(EsAppender.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(UlaAppender.class);
 
     public static final MediaType MEDIA_TYPE_JSON_UTF8 = MediaType.parse("application/json; charset=utf-8");
 
