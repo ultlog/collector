@@ -45,8 +45,7 @@ collector能够适应更改多变的日志格式，并且在部署时不需要�
 ### 实例
 ````xml
 <appender name="ultlog" class="com.ultlog.collector.appender.AsyncEsAppender">
-    <param name="threadPoolProviderName" value="com.ultlog.collector.support.DefaultThreadPoolProvider"/>
-    <param name="url" value="http://localhost:8080/api/v1/log"/>
+    <param name="url" value="http://localhost:8080"/>
     <param name="project" value="ula-test"/>
     <param name="module" value="ula-test"/>
     <param name="uuid" value="ula-test-uuid"/>
