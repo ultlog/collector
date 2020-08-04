@@ -20,7 +20,7 @@ collector能够适应更改多变的日志格式，并且在部署时不需要�
 ````xml
 
 <appender name="ultlog" class="com.ultlog.collector.appender.UlaAppender">
-    <param name="url" value="{ula}/api/v1/log"/>
+    <param name="url" value="{ula}"/>
     <param name="project" value="{project}"/>
     <param name="module" value="{module}"/>
     <param name="uuid" value="{uuid}"/>
