@@ -1,12 +1,35 @@
-# collector
-## 前言 
+<h1 align="center">Collector</h1>
+<p align="center">
+  <a target="_blank" href="https://github.com/ultlog/collector/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue"></a>
+  <a target="_blank" href="https://github.com/ultlog/collector/pulls"><img src=https://img.shields.io/badge/pr-welcome-green"></a>
+  <a target="_blank" href="https://github.com/ultlog/collector/releases/"><img src="https://img.shields.io/github/v/release/ultlog/collector"></a>
+  <a target="_blank" href="https://github.com/ultlog/collector/pulls?q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed/ultlog/collector"></a>
+</p>
+<p align="center">
+Collector is a log collection component developed based on logback, which is suitable for systems using logback log framework. The collector sends the collected logs to the <a href="https://github.com/ultlog/ula/">ula</a> system by extending the appender interface in the logback framework. Compared to <a href="https://github.com/ultlog/searcher">searcher</a>,The collector can adapt to changing log formats, and there is no need to write additional scripts during deployment.
+</p>
+   
+<p align="center">
+  <a href="https://ultlog.com" target="_blank">
+    文档
+  </a>
+  / 
+  <a href="https://github.com/ultlog/ula/" target="_blank">
+    ultlog-api
+  </a>
+  / 
+  <a href="https://github.com/ultlog/ulu/" target="_blank">
+    ultlog-ui
+  </a>
+  / 
+  <a href="https://github.com/ultlog/searcher" target="_blank">
+    searcher
+  </a>
+</p>
 
-collector是基于logback开发的日志收集组件，适用于使用logback日志框架的系统。collector通过对logback框架中的appender接口扩展而将收集到的日志发送到[ula](#ula)系统。相比于searcher，
-collector能够适应更改多变的日志格式，并且在部署时不需要编写额外的脚本。
+## Integrated
 
-## 集成
-
-### 引入
+### Depend
 
 ````xml
 <dependency>
@@ -15,8 +38,8 @@ collector能够适应更改多变的日志格式，并且在部署时不需要�
     <version>1.0.0</version>
 </dependency>
 ````
-### 集成
-在logback.xml/logback-test.xml等生效的logback配置文件中添加如下配置
+### Integrated
+Add the following configuration to valid logback configuration files such as logback.xml / logback-test.xml:
 ````xml
 
 <appender name="ultlog" class="com.ultlog.collector.appender.UlaAppender">
@@ -30,19 +53,19 @@ collector能够适应更改多变的日志格式，并且在部署时不需要�
     <appender-ref ref="ultlog"/>
 </root>
 ````
-#### 异步处理日志
-如果想使用异步appender可以采用logback文档中[appender](http://www.logback.cn/04%E7%AC%AC%E5%9B%9B%E7%AB%A0Appenders.html)文档中的AsyncAppender部分。
+#### Async
+If you want to use asynchronous appender, you can use the logback document about [appender](http://www.logback.cn/04%E7%AC%AC%E5%9B%9B%E7%AB%A0Appenders.html).
 
-#### 配置项说明
+#### Config
 
-|  配置项|   说明 |  
+|  Parameter|   Description |  
 | ------ | ------ | 
-| ula | ula服务的地址 |  
-| project | 项目名称 | 
-| module | 模块名称（如果非微服务项目可以与project相等） | 
-| uuid | 服务唯一属性 |
+| ula | Address of ula service |
+| project | Project name |
+| module | Module name (if non-microservice project can be equal to project) |
+| uuid | Service unique attribute |
 
-### 实例
+### Demo
 ````xml
 <appender name="ultlog" class="com.ultlog.collector.appender.AsyncEsAppender">
     <param name="url" value="http://localhost:8080"/>
